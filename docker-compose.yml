@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  redditclone:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: ./app_start
+    ports:
+      - 8042:8042
+    depends_on:
+      - mysql
+      - redis
+      - mongodb
+
+
+
+  mysql:
+    image: mysql:8
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: "mysql111"
+      MYSQL_DATABASE: golang
+    ports:
+      - '3306:3306'
+    volumes:
+      - './_sql/:/docker-entrypoint-initdb.d/'
+
+
+  mongodb:
+    image: 'mongo:5'
+    environment:
+      - MONGO_INITDB_DATABASE=coursera
+    ports:
+      - '27017-27019:27017-27019'
+
+  redis:
+    image: 'redis'
+    ports:
+      - '6379:6379'
+
